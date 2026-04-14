@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import { getLastOrder } from "../utils/orderStorage";
 
 export default function OrderSuccess() {
-  const order =
-    JSON.parse(localStorage.getItem("sila-last-order") || "null") || null;
+  const order = getLastOrder();
 
   return (
     <MainLayout>
@@ -14,15 +14,14 @@ export default function OrderSuccess() {
             <CheckCircle2 size={40} />
           </div>
 
-          <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">
+          <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-600">
             Order placed
           </p>
           <h1 className="mt-3 text-4xl font-black text-slate-900">
             Thank you for your order
           </h1>
           <p className="mt-4 text-slate-600">
-            This success page demonstrates the final order step for the Sila
-            Market digital shopping experience.
+            Your order has been created successfully.
           </p>
 
           {order && (
@@ -43,23 +42,21 @@ export default function OrderSuccess() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">Phone</p>
-                  <p className="font-bold text-slate-900">
-                    {order.customer.phone}
-                  </p>
+                  <p className="text-sm text-slate-500">Order Status</p>
+                  <p className="font-bold text-slate-900">{order.status}</p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-slate-500">Order Type</p>
-                  <p className="font-bold capitalize text-slate-900">
-                    {order.customer.orderType}
+                  <p className="text-sm text-slate-500">Estimated Time</p>
+                  <p className="font-bold text-slate-900">
+                    {order.estimatedDelivery}
                   </p>
                 </div>
               </div>
 
               <div className="mt-6 border-t border-slate-200 pt-5">
                 <p className="text-sm text-slate-500">Total</p>
-                <p className="text-3xl font-black text-brand-600">
+                <p className="text-3xl font-black text-cyan-600">
                   €{order.totals.total.toFixed(2)}
                 </p>
               </div>
@@ -68,10 +65,10 @@ export default function OrderSuccess() {
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              to="/"
-              className="rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white"
+              to="/my-orders"
+              className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700"
             >
-              Back to Home
+              View My Orders
             </Link>
 
             <Link

@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Tag } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import useCart from "../hooks/useCart";
 import calculateCartTotals from "../utils/calculateCartTotals";
 import validateCoupon from "../utils/validateCoupon";
-import { Tag } from "lucide-react";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -65,6 +65,8 @@ export default function Checkout() {
       toast.error("Please complete all required fields.");
       return;
     }
+    const estimatedDelivery =
+      form.orderType === "pickup" ? "Ready in 15-20 min" : "25-35 min";
 
     const orderData = {
       customer: form,
@@ -73,9 +75,25 @@ export default function Checkout() {
       totals,
       createdAt: new Date().toISOString(),
       orderNumber: `SILA-${Date.now()}`,
+      status: form.orderType === "pickup" ? "Preparing" : "Received",
+      estimatedDelivery,
+      storeNote:
+        form.orderType === "pickup"
+          ? "We are preparing your order for pickup."
+          : "Your order has been received and will be prepared shortly.",
     };
 
+    const existingOrders = JSON.parse(
+      localStorage.getItem("sila-orders") || "[]",
+    );
+
+    localStorage.setItem(
+      "sila-orders",
+      JSON.stringify([orderData, ...existingOrders]),
+    );
+
     localStorage.setItem("sila-last-order", JSON.stringify(orderData));
+
     clearCart();
     navigate("/order-success");
   };
@@ -84,7 +102,7 @@ export default function Checkout() {
     <MainLayout>
       <section className="mx-auto max-w-7xl px-4 py-14 md:px-6">
         <div className="mb-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-600">
             Checkout
           </p>
           <h1 className="mt-2 text-4xl font-black text-slate-900">
@@ -112,7 +130,7 @@ export default function Checkout() {
                   value={form.fullName}
                   onChange={handleChange}
                   placeholder="Enter full name"
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-brand-500"
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-cyan-600"
                 />
               </div>
 
@@ -126,7 +144,7 @@ export default function Checkout() {
                   value={form.phone}
                   onChange={handleChange}
                   placeholder="Enter phone number"
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-brand-500"
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-cyan-600"
                 />
               </div>
 
@@ -138,7 +156,7 @@ export default function Checkout() {
                   name="orderType"
                   value={form.orderType}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-brand-500"
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-cyan-600"
                 >
                   <option value="delivery">Delivery</option>
                   <option value="pickup">Pickup</option>
@@ -155,7 +173,7 @@ export default function Checkout() {
                   value={form.address}
                   onChange={handleChange}
                   placeholder="Enter delivery address"
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-brand-500"
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-cyan-600"
                 />
               </div>
 
@@ -163,6 +181,7 @@ export default function Checkout() {
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Payment Method
                 </label>
+
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 p-4">
                     <input
@@ -202,14 +221,14 @@ export default function Checkout() {
                   onChange={handleChange}
                   rows="4"
                   placeholder="Add notes for your order..."
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-brand-500"
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-cyan-600"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="mt-8 inline-flex rounded-full bg-slate-900 px-8 py-3 text-sm font-semibold text-white transition hover:bg-brand-600"
+              className="mt-8 inline-flex min-w-[180px] items-center justify-center rounded-full bg-slate-900 px-8 py-4 text-base font-semibold text-white transition hover:bg-cyan-700"
             >
               Place Order
             </button>
@@ -228,13 +247,13 @@ export default function Checkout() {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                   placeholder="Enter coupon"
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-brand-500"
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-cyan-600"
                 />
 
                 <button
                   type="button"
                   onClick={handleApplyCoupon}
-                  className="inline-flex min-w-[150px] items-center justify-center gap-2 rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-600"
+                  className="inline-flex min-w-[170px] items-center justify-center gap-2 rounded-full bg-cyan-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700"
                 >
                   <Tag size={16} />
                   Apply Coupon
@@ -303,7 +322,7 @@ export default function Checkout() {
                     <span className="text-base font-bold text-slate-900">
                       Total
                     </span>
-                    <span className="text-2xl font-black text-brand-600">
+                    <span className="text-2xl font-black text-cyan-600">
                       €{totals.total.toFixed(2)}
                     </span>
                   </div>

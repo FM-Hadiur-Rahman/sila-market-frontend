@@ -22,7 +22,7 @@ export default function ProductQuickView({ product, isOpen, onClose }) {
           </button>
         </div>
 
-        <div className="grid gap-0 lg:grid-cols-2">
+        <div className="grid lg:grid-cols-2">
           <div className="bg-slate-100">
             <img
               src={product.image}
@@ -32,7 +32,7 @@ export default function ProductQuickView({ product, isOpen, onClose }) {
           </div>
 
           <div className="p-6 md:p-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-600">
               {product.category}
             </p>
 
@@ -45,7 +45,7 @@ export default function ProductQuickView({ product, isOpen, onClose }) {
             </p>
 
             <div className="mt-6 flex items-end gap-3">
-              <span className="text-4xl font-black text-brand-600">
+              <span className="text-4xl font-black text-cyan-600">
                 €{product.price.toFixed(2)}
               </span>
               {product.oldPrice && (
@@ -58,7 +58,7 @@ export default function ProductQuickView({ product, isOpen, onClose }) {
             <p className="mt-2 text-sm text-slate-500">Unit: {product.unit}</p>
 
             {product.badge && (
-              <div className="mt-5 inline-flex rounded-full bg-accent/10 px-4 py-2 text-sm font-semibold text-accent">
+              <div className="mt-5 inline-flex rounded-full bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700">
                 {product.badge}
               </div>
             )}
@@ -69,7 +69,7 @@ export default function ProductQuickView({ product, isOpen, onClose }) {
                 addToCart(product);
                 onClose();
               }}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-600"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700"
             >
               <ShoppingCart size={18} />
               Add to Cart

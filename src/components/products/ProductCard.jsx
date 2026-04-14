@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { ShoppingCart, Eye } from "lucide-react";
 import useCart from "../../hooks/useCart";
 import ProductQuickView from "./ProductQuickView";
@@ -24,7 +23,7 @@ export default function ProductCard({ product }) {
           />
 
           {product.badge && (
-            <span className="absolute left-4 top-4 rounded-full bg-accent px-3 py-1 text-xs font-bold text-white shadow">
+            <span className="absolute left-4 top-4 rounded-full bg-rose-700 px-3 py-1 text-xs font-bold text-white shadow">
               {product.badge}
             </span>
           )}
@@ -39,13 +38,13 @@ export default function ProductCard({ product }) {
             {product.name}
           </h3>
 
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">
+          <p className="mt-2 text-sm leading-6 text-slate-600">
             {product.description}
           </p>
 
           <div className="mt-4 flex items-end justify-between gap-4">
             <div>
-              <p className="text-2xl font-black text-brand-600">
+              <p className="text-2xl font-black text-cyan-600">
                 €{product.price.toFixed(2)}
               </p>
               <div className="flex items-center gap-2">
@@ -65,7 +64,7 @@ export default function ProductCard({ product }) {
             <button
               type="button"
               onClick={() => addToCart(product)}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-600"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700"
             >
               <ShoppingCart size={16} />
               Add
@@ -74,7 +73,7 @@ export default function ProductCard({ product }) {
             <button
               type="button"
               onClick={() => setIsQuickViewOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand-500 hover:text-brand-600"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-cyan-600 hover:text-cyan-600"
             >
               <Eye size={16} />
               View
