@@ -28,12 +28,7 @@ export default function Navbar() {
   const isHome = location.pathname === "/";
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
+    document.body.style.overflow = isOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
@@ -41,7 +36,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-white/88 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 py-4 md:px-6">
           <div className="flex items-center justify-between gap-4">
             <Link to="/" className="group flex min-w-0 items-center gap-3">
@@ -62,7 +57,7 @@ export default function Navbar() {
                     Sila Market
                   </p>
 
-                  <span className="hidden rounded-full bg-cyan-50 px-2.5 py-1 text-[11px] font-semibold text-cyan-700 xl:inline-flex">
+                  <span className="hidden rounded-full border border-cyan-100 bg-cyan-50 px-2.5 py-1 text-[11px] font-semibold text-cyan-700 xl:inline-flex">
                     Local Store
                   </span>
                 </div>
@@ -82,7 +77,7 @@ export default function Navbar() {
                     className={({ isActive }) =>
                       `rounded-full px-3 py-2.5 text-sm font-semibold transition xl:px-4 ${
                         isActive
-                          ? "bg-slate-900 text-white shadow-[0_10px_24px_rgba(15,23,42,0.16)]"
+                          ? "bg-gradient-to-r from-slate-950 to-slate-800 text-white shadow-[0_10px_24px_rgba(15,23,42,0.16)]"
                           : "text-slate-700 hover:bg-slate-100 hover:text-cyan-700"
                       }`
                     }
@@ -96,7 +91,7 @@ export default function Navbar() {
             <div className="hidden items-center gap-2 lg:flex xl:gap-3">
               <a
                 href="tel:+492087000000"
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-cyan-600 hover:text-cyan-700 xl:px-5 xl:py-3"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-cyan-500 hover:text-cyan-700 xl:px-5 xl:py-3"
               >
                 <Phone size={17} />
                 Call
@@ -105,7 +100,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={openCart}
-                className="relative inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.18)] transition hover:-translate-y-0.5 hover:bg-cyan-700 xl:px-5 xl:py-3"
+                className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-slate-950 to-slate-800 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(15,23,42,0.18)] transition hover:-translate-y-0.5 hover:from-cyan-700 hover:to-cyan-600 xl:px-5 xl:py-3"
               >
                 <ShoppingCart size={17} />
                 Cart
@@ -128,7 +123,7 @@ export default function Navbar() {
           </div>
 
           {isHome && (
-            <div className="mt-4 hidden items-center justify-between rounded-[24px] border border-slate-200 bg-gradient-to-r from-slate-50 to-white px-5 py-3 lg:flex">
+            <div className="mt-4 hidden items-center justify-between rounded-[24px] border border-slate-200 bg-gradient-to-r from-slate-50 via-white to-cyan-50/50 px-5 py-3 lg:flex">
               <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
                 <Sparkles size={16} className="text-cyan-600" />
                 Weekly offers, premium ordering flow, and direct customer
@@ -150,7 +145,7 @@ export default function Navbar() {
       {isOpen && (
         <div className="fixed inset-0 z-[100] lg:hidden">
           <div
-            className="absolute inset-0 bg-slate-950/55 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-slate-950/60 backdrop-blur-[3px]"
             onClick={() => setIsOpen(false)}
           />
 
@@ -192,7 +187,7 @@ export default function Navbar() {
 
             <div className="flex h-[calc(100%-95px)] flex-col overflow-y-auto">
               <div className="px-4 py-5">
-                <div className="rounded-[24px] bg-slate-950 p-4 text-white">
+                <div className="rounded-[24px] bg-gradient-to-r from-slate-950 to-slate-900 p-4 text-white">
                   <p className="text-sm font-semibold text-cyan-300">
                     Premium Demo
                   </p>
@@ -227,7 +222,7 @@ export default function Navbar() {
                 <div className="space-y-3">
                   <a
                     href="tel:+492087000000"
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700"
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-slate-950 to-slate-800 px-4 py-3 text-sm font-semibold text-white transition hover:from-cyan-700 hover:to-cyan-600"
                   >
                     <Phone size={16} />
                     Call Now
