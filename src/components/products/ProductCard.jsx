@@ -8,6 +8,15 @@ export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
+  const image = product?.image || "https://placehold.co/600x400?text=No+Image";
+  const name = product?.name || "Unnamed Product";
+  const category = product?.category || "General";
+  const description = product?.description || "No description available.";
+  const price = Number(product?.price || 0);
+  const oldPrice = Number(product?.oldPrice || 0);
+  const unit = product?.unit || "piece";
+  const badge = product?.badge || "";
+
   return (
     <>
       <motion.div
@@ -17,44 +26,43 @@ export default function ProductCard({ product }) {
       >
         <div className="relative overflow-hidden">
           <img
-            src={product.image}
-            alt={product.name}
+            src={image}
+            alt={name}
+            loading="lazy"
             className="h-60 w-full object-cover transition duration-500 group-hover:scale-105"
           />
 
-          {product.badge && (
+          {badge && (
             <span className="absolute left-4 top-4 rounded-full bg-rose-700 px-3 py-1 text-xs font-bold text-white shadow">
-              {product.badge}
+              {badge}
             </span>
           )}
         </div>
 
         <div className="p-5">
           <p className="text-sm font-medium capitalize text-slate-500">
-            {product.category}
+            {category}
           </p>
 
-          <h3 className="mt-1 text-xl font-black text-slate-900">
-            {product.name}
-          </h3>
+          <h3 className="mt-1 text-xl font-black text-slate-900">{name}</h3>
 
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            {product.description}
+          <p className="mt-2 min-h-[72px] text-sm leading-6 text-slate-600">
+            {description}
           </p>
 
           <div className="mt-4 flex items-end justify-between gap-4">
             <div>
               <p className="text-2xl font-black text-cyan-600">
-                €{product.price.toFixed(2)}
+                €{price.toFixed(2)}
               </p>
               <div className="flex items-center gap-2">
-                {product.oldPrice ? (
+                {oldPrice > 0 && (
                   <span className="text-sm text-slate-400 line-through">
-                    €{product.oldPrice.toFixed(2)}
+                    €{oldPrice.toFixed(2)}
                   </span>
-                ) : null}
+                )}
                 <span className="text-xs font-medium text-slate-500">
-                  / {product.unit}
+                  / {unit}
                 </span>
               </div>
             </div>

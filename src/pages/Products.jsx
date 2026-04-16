@@ -1,27 +1,57 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MainLayout from "../layouts/MainLayout";
-import { products } from "../data/products";
 import ProductFilters from "../components/products/ProductFilters";
 import ProductGrid from "../components/products/ProductGrid";
-
-const categories = ["all", "pantry", "snacks", "frozen", "meat"];
+import { getProducts } from "../services/productService";
 
 export default function Products() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const res = await getProducts();
+        setProducts(res.data || []);
+      } catch (error) {
+        console.error("Failed to load products:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const categories = useMemo(() => {
+    const dynamicCategories = [
+      "all",
+      ...new Set(
+        products
+          .map((product) => product.category?.toLowerCase())
+          .filter(Boolean),
+      ),
+    ];
+
+    return dynamicCategories;
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchesCategory =
-        activeCategory === "all" || product.category === activeCategory;
+        activeCategory === "all" ||
+        product.category?.toLowerCase() === activeCategory;
 
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(search.toLowerCase());
+      const matchesSearch =
+        product.name?.toLowerCase().includes(search.toLowerCase()) ||
+        product.description?.toLowerCase().includes(search.toLowerCase());
 
       return matchesCategory && matchesSearch;
     });
-  }, [search, activeCategory]);
+  }, [products, search, activeCategory]);
 
   return (
     <MainLayout>
@@ -46,7 +76,13 @@ export default function Products() {
           categories={categories}
         />
 
-        <ProductGrid products={filteredProducts} />
+        {loading ? (
+          <div className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-soft">
+            <p className="text-slate-600">Loading products...</p>
+          </div>
+        ) : (
+          <ProductGrid products={filteredProducts} />
+        )}
       </section>
     </MainLayout>
   );

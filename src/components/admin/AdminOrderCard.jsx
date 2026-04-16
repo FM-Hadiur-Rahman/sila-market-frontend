@@ -1,46 +1,55 @@
 import toast from "react-hot-toast";
-import { formatOrderDate, getNextStatus } from "../../utils/orderHelpers";
-import { updateOrderByNumber } from "../../utils/orderStorage";
 import OrderStatusBadge from "../orders/OrderStatusBadge";
+import { formatOrderDate, getNextStatus } from "../../utils/orderHelpers";
+import { updateOrderStatus } from "../../services/orderService";
 
 export default function AdminOrderCard({ order, onRefresh }) {
-  const handleAdvanceStatus = () => {
-    const nextStatus = getNextStatus(order.status, order.customer.orderType);
+  const handleAdvanceStatus = async () => {
+    try {
+      const nextStatus = getNextStatus(order.status, order.customer.orderType);
 
-    if (nextStatus === order.status) {
-      toast("Already at final status");
-      return;
+      if (nextStatus === order.status) {
+        toast("Order is already at final status.");
+        return;
+      }
+
+      const updatedStoreNote =
+        nextStatus === "Preparing"
+          ? "We are preparing your order."
+          : nextStatus === "Out for Delivery"
+            ? "Your order is out for delivery."
+            : nextStatus === "Delivered"
+              ? "Your order has been delivered."
+              : nextStatus === "Ready for Pickup"
+                ? "Your order is ready for pickup."
+                : nextStatus === "Completed"
+                  ? "Pickup completed successfully."
+                  : `Status updated to ${nextStatus}.`;
+
+      await updateOrderStatus(order.orderNumber, {
+        status: nextStatus,
+        storeNote: updatedStoreNote,
+      });
+
+      toast.success(`Order moved to ${nextStatus}`);
+      onRefresh?.();
+    } catch (error) {
+      toast.error(error.message || "Status update failed");
     }
-
-    const updatedStoreNote =
-      nextStatus === "Preparing"
-        ? "We are preparing your order."
-        : nextStatus === "Out for Delivery"
-          ? "Your order is out for delivery."
-          : nextStatus === "Delivered"
-            ? "Your order has been delivered."
-            : nextStatus === "Ready for Pickup"
-              ? "Your order is ready for pickup."
-              : nextStatus === "Completed"
-                ? "Pickup completed successfully."
-                : `Status updated to ${nextStatus}.`;
-
-    updateOrderByNumber(order.orderNumber, {
-      status: nextStatus,
-      storeNote: updatedStoreNote,
-    });
-
-    toast.success(`Updated to ${nextStatus}`);
-    onRefresh?.();
   };
 
-  const handleCancel = () => {
-    updateOrderByNumber(order.orderNumber, {
-      status: "Cancelled",
-      storeNote: "This order was cancelled by the store.",
-    });
-    toast.success("Order cancelled");
-    onRefresh?.();
+  const handleCancel = async () => {
+    try {
+      await updateOrderStatus(order.orderNumber, {
+        status: "Cancelled",
+        storeNote: "This order was cancelled by the store.",
+      });
+
+      toast.success("Order cancelled");
+      onRefresh?.();
+    } catch (error) {
+      toast.error(error.message || "Cancel failed");
+    }
   };
 
   return (

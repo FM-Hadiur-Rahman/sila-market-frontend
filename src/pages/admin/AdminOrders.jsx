@@ -1,104 +1,32 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
-import { getOrders, saveOrders } from "../../utils/orderStorage";
 import AdminOrderCard from "../../components/admin/AdminOrderCard";
+import { getAdminOrders } from "../../services/orderService";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const refreshOrders = () => {
-    setOrders(getOrders());
+  const refreshOrders = async () => {
+    try {
+      const res = await getAdminOrders();
+      setOrders(res.data);
+    } catch (error) {
+      console.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     refreshOrders();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentOrders = getOrders();
-
-      const updatedOrders = currentOrders.map((order) => {
-        if (
-          ["Delivered", "Completed", "Cancelled", "Ready for Pickup"].includes(
-            order.status,
-          )
-        ) {
-          return order;
-        }
-
-        const minutesPassed =
-          (Date.now() - new Date(order.createdAt).getTime()) / (1000 * 60);
-
-        if (order.customer.orderType === "pickup") {
-          if (minutesPassed >= 1 && order.status === "Preparing") {
-            return {
-              ...order,
-              status: "Ready for Pickup",
-              storeNote: "Your order is ready for pickup.",
-            };
-          }
-
-          if (minutesPassed >= 2 && order.status === "Ready for Pickup") {
-            return {
-              ...order,
-              status: "Completed",
-              storeNote: "Pickup completed successfully.",
-            };
-          }
-        } else {
-          if (minutesPassed >= 1 && order.status === "Received") {
-            return {
-              ...order,
-              status: "Preparing",
-              storeNote: "We are preparing your order.",
-            };
-          }
-
-          if (minutesPassed >= 2 && order.status === "Preparing") {
-            return {
-              ...order,
-              status: "Out for Delivery",
-              storeNote: "Your order is out for delivery.",
-            };
-          }
-
-          if (minutesPassed >= 3 && order.status === "Out for Delivery") {
-            return {
-              ...order,
-              status: "Delivered",
-              storeNote: "Your order has been delivered.",
-            };
-          }
-        }
-
-        return order;
-      });
-
-      saveOrders(updatedOrders);
-
-      const lastOrder = JSON.parse(
-        localStorage.getItem("sila-last-order") || "null",
-      );
-
-      if (lastOrder) {
-        const updatedLast =
-          updatedOrders.find(
-            (order) => order.orderNumber === lastOrder.orderNumber,
-          ) || lastOrder;
-
-        localStorage.setItem("sila-last-order", JSON.stringify(updatedLast));
-      }
-
-      setOrders(updatedOrders);
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <AdminLayout title="Orders">
-      {orders.length === 0 ? (
+      {loading ? (
+        <div className="text-slate-600">Loading orders...</div>
+      ) : orders.length === 0 ? (
         <div className="rounded-[32px] border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
           <h2 className="text-3xl font-black text-slate-900">
             No orders found

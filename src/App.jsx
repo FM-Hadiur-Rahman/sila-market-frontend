@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import AdminProtectedRoute from "./routes/AdminProtectedRoute";
 
 // Customer pages
 import Home from "./pages/Home";
@@ -42,15 +43,73 @@ export default function App() {
       <Route path="/contact" element={<Contact />} />
 
       {/* Admin routes */}
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      <Route path="/admin/orders" element={<AdminOrders />} />
-      <Route path="/admin/products" element={<AdminProducts />} />
-      <Route path="/admin/products/add" element={<AdminAddProduct />} />
-      <Route path="/admin/products/:slug/edit" element={<AdminEditProduct />} />
-      <Route path="/admin/coupons" element={<AdminCoupons />} />
-      <Route path="/admin/customers" element={<AdminCustomers />} />
-      <Route path="/admin/settings" element={<AdminSettings />} />
+      <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
       <Route path="/admin/login" element={<AdminLogin />} />
+
+      <Route
+        path="/admin/dashboard"
+        element={
+          <AdminProtectedRoute>
+            <AdminDashboard />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/orders"
+        element={
+          <AdminProtectedRoute>
+            <AdminOrders />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/products"
+        element={
+          <AdminProtectedRoute>
+            <AdminProducts />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/products/add"
+        element={
+          <AdminProtectedRoute>
+            <AdminAddProduct />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/products/:slug/edit"
+        element={
+          <AdminProtectedRoute>
+            <AdminEditProduct />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/coupons"
+        element={
+          <AdminProtectedRoute>
+            <AdminCoupons />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/customers"
+        element={
+          <AdminProtectedRoute>
+            <AdminCustomers />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/settings"
+        element={
+          <AdminProtectedRoute>
+            <AdminSettings />
+          </AdminProtectedRoute>
+        }
+      />
 
       {/* Fallback */}
       <Route path="*" element={<NotFound />} />
